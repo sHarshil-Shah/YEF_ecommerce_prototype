@@ -1,34 +1,83 @@
 package com.example.sum.e_commerce;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.widget.ArrayAdapter;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-class CustomAdapter extends ArrayAdapter<String>{
+import java.util.ArrayList;
 
-    public CustomAdapter(@NonNull Context context, String[] items) {
-        super(context,R.layout.custom_row ,items);
+public class CustomAdapter extends ArrayAdapter<itemDetails> {
+
+    private Context mContext;
+    private int mResource;
+    private int lastPosition = -1;
+
+    private static class ViewHolder {
+        TextView name;
+        TextView discription;
+        TextView price;
+        ImageView imageView;
     }
 
+
+    public CustomAdapter(Context context, int resource, ArrayList<itemDetails> objects) {
+        super(context, resource, objects);
+        mContext = context;
+        mResource = resource;
+    }
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View customView = inflater.inflate(R.layout.custom_row,parent,false);
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-        String txt = getItem(position);
-        TextView text = customView.findViewById(R.id.txtName);
-        ImageView image = customView.findViewById(R.id.imgProduct);
+        //get the persons information
+        String name = getItem(position).getName();
+        String discription = getItem(position).getDiscription();
+        int price = getItem(position).getPrice();
+        int image = getItem(position).getImage();
 
-        text.setText(txt);
-        image.setImageResource(R.mipmap.ic_launcher);
+        //Create the person object with the information
+        itemDetails person = new itemDetails(name,discription,price,image);
 
-        return customView;
+        //create the view result for showing the animation
+        final View result;
+
+        //ViewHolder object
+        ViewHolder holder;
+
+
+        if(convertView == null){
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            convertView = inflater.inflate(mResource, parent, false);
+            holder= new ViewHolder();
+            holder.name = convertView.findViewById(R.id.txtName);
+            holder.discription =  convertView.findViewById(R.id.txtDescription);
+            holder.price =  convertView.findViewById(R.id.txtItemPrice);
+holder.imageView = convertView.findViewById(R.id.imgProduct);
+            result = convertView;
+
+            convertView.setTag(holder);
+        }
+        else{
+            holder = (ViewHolder) convertView.getTag();
+            result = convertView;
+        }
+
+        Animation animation = AnimationUtils.loadAnimation(mContext,   (position > lastPosition) ? R.anim.load_down_anim : R.anim.load_up_anim);
+        result.startAnimation(animation);
+        lastPosition = position;
+
+        holder.name.setText(person.getName());
+        holder.discription.setText(person.getDiscription());
+        holder.price.setText("₹ "+person.getPrice());
+        holder.imageView.setImageResource(image);
+
+        return convertView;
     }
 }
