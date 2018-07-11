@@ -1,11 +1,14 @@
 package com.example.sum.e_commerce;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ public class details extends AppCompatActivity {
             R.drawable.image3,
             R.drawable.image4
     };
+    String phoneNumber = "1234567890";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +54,11 @@ public class details extends AppCompatActivity {
             public void onClick(View v) {
                 //Inform the user the button has been clicked
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:123456789"));
-                startActivity(callIntent);
+                callIntent.setData(Uri.parse("tel:1234567890"));
+                int checkPermission = checkCallingPermission(Manifest.permission.CALL_PHONE);
+                if(checkPermission != PackageManager.PERMISSION_GRANTED){
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
+                }
             }
         });
     }

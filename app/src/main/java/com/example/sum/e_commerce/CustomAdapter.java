@@ -36,7 +36,7 @@ public class CustomAdapter extends ArrayAdapter<itemDetails> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        //get the persons information
+        //get information
         String name = getItem(position).getName();
         String discription = getItem(position).getDiscription();
         int price = getItem(position).getPrice();
@@ -59,12 +59,11 @@ public class CustomAdapter extends ArrayAdapter<itemDetails> {
             holder.name = convertView.findViewById(R.id.txtName);
             holder.discription =  convertView.findViewById(R.id.txtDescription);
             holder.price =  convertView.findViewById(R.id.txtItemPrice);
-holder.imageView = convertView.findViewById(R.id.imgProduct);
+            holder.imageView = convertView.findViewById(R.id.imgProduct);
             result = convertView;
-
             convertView.setTag(holder);
         }
-        else{
+        else {
             holder = (ViewHolder) convertView.getTag();
             result = convertView;
         }
